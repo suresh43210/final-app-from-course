@@ -21,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider afterSignOutUrl={process.env.NEXT_PUBLIC_URL}>
+    <ClerkProvider>
       <html lang="en">
         <body className={`${poppins.variable} font-sans`}>{children}</body>
       </html>

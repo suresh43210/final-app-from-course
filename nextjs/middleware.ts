@@ -1,15 +1,10 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-const NEXT_PUPLIC_CLERK_URL = process.env.NEXT_PUPLIC_CLERK_URL;
-if (!NEXT_PUPLIC_CLERK_URL) {
-  throw new Error("NEXT_PUBLIC_CLERK_URL is not defined");
-}
-
 const isPublicRoute = createRouteMatcher(["/", "/pricing"]);
 
 export default clerkMiddleware((auth, request) => {
-  // If the user is not authenticated and they are trying to access
-  // a private route, redirect them to the Clerk sign in page
+  // if a user is not authenticated and they are trying to
+  // access a private route, redirect them to the clerk login page
   if (!auth().userId && !isPublicRoute(request)) {
     auth().protect();
   }
