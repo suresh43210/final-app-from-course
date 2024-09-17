@@ -1,5 +1,4 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
 
 const NEXT_PUPLIC_CLERK_URL = process.env.NEXT_PUPLIC_CLERK_URL;
 if (!NEXT_PUPLIC_CLERK_URL) {
@@ -12,9 +11,7 @@ export default clerkMiddleware((auth, request) => {
   // If the user is not authenticated and they are trying to access
   // a private route, redirect them to the Clerk sign in page
   if (!auth().userId && !isPublicRoute(request)) {
-    const loginUrl = new URL("/sign-in", NEXT_PUPLIC_CLERK_URL);
-    loginUrl.searchParams.set("redirect_url", request.url);
-    return NextResponse.redirect(loginUrl.toString());
+    auth().protect();
   }
 });
 
