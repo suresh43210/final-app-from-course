@@ -1,19 +1,48 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button } from "./ui/button";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getDesktopClasses, getMobileClasses } from "@/utils/sidebarUtils";
 import SidebarNav from "./SidebarNav";
 
+const MOBILE_WINDOW_WIDTH_LIMIT = 1024;
+
 function Sidebar() {
   const [isMobile, setIsMobile] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const sidebarRef = useRef<HTMLDivElement>(null);
 
-  // TODO: Handle Resize
-  useEffect(() => {}, []);
+  //  Handle Resize
+  useEffect(() => {
+    const handleResize = () => {
+      const calculatedIsMobile = window.innerWidth < MOBILE_WINDOW_WIDTH_LIMIT;
+      setIsMobile(calculatedIsMobile);
+      if (calculatedIsMobile) {
+        setIsCollapsed(false);
+      } else {
+        setIsOpen(false);
+      }
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("click", handleOutsideClick);
+
+    return () => {
+      window.removeEventListener("click", handleOutsideClick);
+    };
+  }, []);
 
   const toggleSidebar = () => {
     if (isMobile) {
@@ -23,7 +52,16 @@ function Sidebar() {
     }
   };
 
-  const handleOutsideClick = () => {};
+  const handleOutsideClick = (event: MouseEvent) => {
+    if (
+      sidebarRef.current &&
+      !sidebarRef.current.contains(event.target as Node)
+    ) {
+      if (isMobile && isOpen) {
+        setIsOpen(false);
+      }
+    }
+  };
 
   const renderMenuIcon = (isOpen: boolean) => {
     return isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />;
@@ -48,6 +86,7 @@ function Sidebar() {
       {/* TODO: Store all components in nav */}
       {(!isMobile || isOpen) && (
         <div
+          ref={sidebarRef}
           className={cn(
             "bg-gray-100 flex flex-col h-screen transition-all duration-300 overflow-y-auto",
             getMobileClasses(isMobile, isOpen),

@@ -48,6 +48,8 @@ function SidebarNav({ isMobile, isCollapsed }: SidebarNavProps) {
       {navItems.map((item) => (
         <Button
           key={item.href}
+          variant="ghost"
+          asChild
           className={cn(
             "w-full justify-start hover:text-main hover:bg-gray-200 flex items-center text-lg font-medium",
             !isMobile && isCollapsed && "justify-center p-2",
