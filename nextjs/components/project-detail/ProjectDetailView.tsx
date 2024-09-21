@@ -1,19 +1,23 @@
 "use client";
 
 import { Project } from "@/server/db/schema";
-import React, { useState } from "react";
+import React, { lazy, useEffect, useState } from "react";
 import ProjectDetailHeader from "./ProjectDetailHeader";
 import ProjectDetailStepper from "./ProjectDetailStepper";
-// import ProjectDetailBody from "./ProjectDetailBody";
 import ConfirmationModal from "../ConfirmationModal";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import ProjectDetailBody from "./ProjectDetailBody";
+
+const ManageUploadStep = lazy(() => import("../ManageUploadStep"));
+const ConfigurePromptsStep = lazy(() => import("../ConfigurePromptsStep"));
+const GenerateContentStep = lazy(() => import("../GenerateContentStep"));
 
 const steps = [
-  { name: "Upload Media", tab: "upload" },
-  { name: "Prompts", tab: "prompts" },
-  { name: "Generate", tab: "generate" },
+  { name: "Upload Media", tab: "upload", component: ManageUploadStep },
+  { name: "Prompts", tab: "prompts", component: ConfigurePromptsStep },
+  { name: "Generate", tab: "generate", component: GenerateContentStep },
 ];
 
 interface ProjectDetailViewProps {
@@ -23,9 +27,28 @@ interface ProjectDetailViewProps {
 function ProjectDetailView({ project }: ProjectDetailViewProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
-  const [currentStep, setCurrentStep] = useState(0);
+  const searchParams = useSearchParams();
 
+  const findStepIndex = (tab: string) => {
+    const index = steps.findIndex((step) => step.tab === tab);
+    return index === -1 ? 0 : index;
+  };
+
+  const [currentStep, setCurrentStep] = useState(
+    findStepIndex(searchParams.get("tab") ?? "upload")
+  );
   const router = useRouter();
+
+  useEffect(() => {
+    const tab = searchParams.get("tab") ?? "upload";
+    setCurrentStep(findStepIndex(tab));
+  }, [searchParams]);
+
+  const handleStepClick = (index: number) => {
+    router.push(`/project/${project.id}?tab=${steps[index].tab}`, {
+      scroll: false,
+    });
+  };
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -50,10 +73,14 @@ function ProjectDetailView({ project }: ProjectDetailViewProps) {
       />
       <ProjectDetailStepper
         currentStep={currentStep}
-        setCurrentStep={setCurrentStep}
+        handleStepClick={handleStepClick}
         steps={steps}
       />
-      {/* <ProjectDetailBody currentStep={currentStep} /> */}
+      <ProjectDetailBody
+        currentStep={currentStep}
+        steps={steps}
+        projectId={project.id}
+      />
 
       <ConfirmationModal
         isOpen={showDeleteConfirmation}

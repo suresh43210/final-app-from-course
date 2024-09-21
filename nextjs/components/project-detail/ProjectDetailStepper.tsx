@@ -3,13 +3,13 @@ import React from "react";
 
 interface ProjectDetailStepperProps {
   currentStep: number;
-  setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
+  handleStepClick: (index: number) => void;
   steps: { name: string; tab: string }[];
 }
 
 function ProjectDetailStepper({
   currentStep,
-  setCurrentStep,
+  handleStepClick,
   steps,
 }: ProjectDetailStepperProps) {
   // TODO: Grab tab query from url.
@@ -28,7 +28,7 @@ function ProjectDetailStepper({
             className="flex-1 flex items-center justify-center"
           >
             <button
-              onClick={() => setCurrentStep(index)}
+              onClick={() => handleStepClick(index)}
               className={cn(
                 "flex flex-col items-center w-full",
                 index === currentStep ? "text-primary" : "text-muted-foreground"
@@ -60,7 +60,7 @@ function ProjectDetailStepper({
             className="flex items-center flex-1 last:flex-grow-0"
           >
             <button
-              onClick={() => setCurrentStep(index)}
+              onClick={() => handleStepClick(index)}
               className={cn(
                 "flex flex-col items-center",
                 index === currentStep ? "text-primary" : "text-muted-foreground"
