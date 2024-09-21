@@ -7,7 +7,6 @@ import React from "react";
 
 export default async function ProjectsPage() {
   const projects = await getProjectsForUser();
-  await new Promise((resolve) => setTimeout(resolve, 10000));
 
   return (
     <div className="w-full">

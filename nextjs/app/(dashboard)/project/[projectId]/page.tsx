@@ -1,4 +1,5 @@
 import ProjectDetailView from "@/components/project-detail/ProjectDetailView";
+import { getProject } from "@/server/queries";
 import { notFound } from "next/navigation";
 import React from "react";
 
@@ -8,11 +9,16 @@ interface ProjectPageProps {
   };
 }
 
-export default function ProjectPage({ params }: ProjectPageProps) {
-  // TODO: Make a query to the DB to grab the project with projectID
-  // TODO: Pass project to our children components
+export default async function ProjectPage({ params }: ProjectPageProps) {
+  const project = await getProject(params.projectId);
 
-  // TODO: If not found, return 404 page
+  if (!project) {
+    return notFound();
+  }
 
-  return <ProjectDetailView />;
+  return (
+    <div className="p-2 sm:p-4 md:p-6 lg:p-8 mt-2">
+      <ProjectDetailView project={project} />
+    </div>
+  );
 }
