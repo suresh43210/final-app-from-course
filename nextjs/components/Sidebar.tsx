@@ -12,10 +12,9 @@ import UserProfileSection from "./UserProfileSection";
 const MOBILE_WINDOW_WIDTH_LIMIT = 1024;
 
 function Sidebar() {
-  const [isMobile, setIsMobile] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
   const { isSignedIn } = useUser();
 
   const sidebarRef = useRef<HTMLDivElement>(null);
@@ -33,7 +32,6 @@ function Sidebar() {
     };
 
     handleResize();
-    setIsMounted(true);
     window.addEventListener("resize", handleResize);
 
     return () => {
@@ -71,10 +69,6 @@ function Sidebar() {
   const renderMenuIcon = (isOpen: boolean) => {
     return isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />;
   };
-
-  if (!isMounted) {
-    return null;
-  }
 
   return (
     <div>
