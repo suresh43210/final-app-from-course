@@ -1,42 +1,22 @@
 "use client";
 
 import { Asset } from "@/server/db/schema";
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Skeleton } from "../ui/skeleton";
 import { AudioLines, FileMinus, Video, File, Dot, Trash } from "lucide-react";
 import { Button } from "../ui/button";
 
 interface UploadStepBodyProps {
-  projectId: string;
   setDeleteAssetId: React.Dispatch<React.SetStateAction<string | null>>;
+  isLoading: boolean;
+  uploadAssets: Asset[];
 }
 
-function UploadStepBody({ projectId, setDeleteAssetId }: UploadStepBodyProps) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [uploadAssets, setUploadAssets] = useState<Asset[]>([]);
-
-  useEffect(() => {
-    setIsLoading(true);
-    const fetchAssets = async () => {
-      try {
-        const response = await axios.get<Asset[]>(
-          `/api/projects/${projectId}/assets`
-        );
-        setUploadAssets(response.data);
-        console.log("Uploaded assets", response.data);
-      } catch (error) {
-        console.error("Failed to fetch assets", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchAssets();
-  }, [projectId]);
-
-  // fetch all assets processing jobs - polling
-
+function UploadStepBody({
+  setDeleteAssetId,
+  isLoading,
+  uploadAssets,
+}: UploadStepBodyProps) {
   if (isLoading) {
     return (
       <div className="space-y-2 sm:space-y-3 md:space-y-4">
