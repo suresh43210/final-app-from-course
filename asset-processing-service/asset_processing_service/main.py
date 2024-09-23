@@ -62,6 +62,7 @@ async def worker(
                 print(f"Worker {worker_id} processing job {job.id}...")
                 try:
                     await process_job(job)
+                    
                     await update_job_details(job.id, {"status": "completed"})
                 except Exception as e:
                     print(f"Error processing job {job.id}: {e}")
