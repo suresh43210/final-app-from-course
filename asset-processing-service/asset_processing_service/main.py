@@ -9,11 +9,11 @@ from asset_processing_service.job_processor import process_job
 async def job_fetcher(job_queue: asyncio.Queue, jobs_pending_or_in_progress: set):
     while True:
         try:
-            logger.info("Fetching jobs...")
+            current_time = asyncio.get_running_loop().time()            
+            logger.info(f"Fetching jobs: {current_time}")
             jobs = await fetch_jobs()
 
             for job in jobs:
-                current_time = asyncio.get_running_loop().time()            
                 if job.status == "in_progress":
                     last_heartbeat_time = job.lastHeartBeat.timestamp()
                     time_since_last_heartbeat = abs(current_time - last_heartbeat_time)
