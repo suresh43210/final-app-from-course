@@ -17,4 +17,4 @@ RUN pip install poetry \
 COPY . /app
 
 # Run the service when the container launches
-CMD ["asset-processing-service"]
+CMD ["poetry", "run", "asset-processing-service"]
