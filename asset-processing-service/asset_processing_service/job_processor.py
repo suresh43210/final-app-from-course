@@ -52,6 +52,8 @@ async def process_job(job: AssetProcessingJob) -> None:
             content = "\n\n".join(transcribed_chunks)
         else:
             raise ValueError(f"Unsupported content type: {content_type}")
+        
+        logger.info(f"FINAL CONTENT: {content}")
 
         # update asset content
         await update_asset_content(asset.id, content)
