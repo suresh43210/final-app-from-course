@@ -1,6 +1,5 @@
 "use client";
 
-import { Prompt } from "@/server/db/schema";
 import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
@@ -13,9 +12,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./ui/tooltip";
+import { CommonPrompt } from "@/interfaces/CommonPrompt";
 
 interface PromptContainerCardProps {
-  prompt: Prompt;
+  prompt: CommonPrompt;
   handleOnDelete: () => void;
   handleOnClick: (promptId: string) => void;
 }
