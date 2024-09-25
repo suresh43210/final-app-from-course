@@ -1,6 +1,6 @@
 "use client";
 
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import GenerateStepHeader from "./GenerateStepHeader";
 import axios from "axios";
 import { Asset, GeneratedContent, Prompt } from "@/server/db/schema";
@@ -165,7 +165,7 @@ function GenerateContentStep({ projectId }: GenerateContentStepProps) {
         clearInterval(pollingInterval);
       }
     };
-  }, [isGenerating]);
+  }, [isGenerating, projectId, totalPrompts]);
 
   const startGeneration = async () => {
     setGeneratedContent([]);
